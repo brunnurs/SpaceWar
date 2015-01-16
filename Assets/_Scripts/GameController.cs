@@ -11,9 +11,10 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        Vector3 spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), 0);
-        Quaternion spawnRotation = Quaternion.identity;
-        Instantiate (planet, spawnPosition, spawnRotation);
+        for (int i = 0; i< amountOfPlanets; i++)
+        {
+            SpawnPlanet();
+        }
     }
 
     void SpawnPlanet()
@@ -22,15 +23,12 @@ public class GameController : MonoBehaviour
         Quaternion spawnRotation = Quaternion.identity;
         GameObject newPlanet = Instantiate (planet, spawnPosition, spawnRotation) as GameObject;
 
-        SetPlanetSizeRandomly();
-        GrowthController growthController = newPlanet.GetComponent<GrowthController>();
-        growthController.ShipCounter = Random.Range(GrowthController.MIN_SHIPS, GrowthController.MAX_SHIPS);
+        SetPlanetSizeRandomly(newPlanet);
     }
 
-    
-    // Update is called once per frame
-    void Update()
+    void SetPlanetSizeRandomly(GameObject newPlanet)
     {
-    
+        GrowthController growthController = newPlanet.GetComponent<GrowthController>();
+        growthController.ShipCounter = Random.Range(GrowthController.MIN_SHIPS, GrowthController.MAX_SHIPS);
     }
 }
