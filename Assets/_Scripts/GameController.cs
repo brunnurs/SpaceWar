@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     public Vector3 spawnRange;
     public GameObject planetPrototype;
 
-	private List<GameObject> allPlanets = new List<GameObject>();
+	public List<GameObject> allPlanets = new List<GameObject>();
 
     // Use this for initialization
     void Start()
@@ -22,19 +22,27 @@ public class GameController : MonoBehaviour
 	{
 		for (int i = 0; i < amountOfPlanets; i++) 
 		{
-			SpawnPlanet ();
+			SpawnPlanet (i);
 		}
 	}
 
-    void SpawnPlanet()
+    void SpawnPlanet(int planetNumber)
     {
         Vector3 spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), 0);
-		//while ())
+
+		while(IsSpawnPositionTooCloseToOtherPlanets(spawnPosition))
+		{
+			Debug.Log("two planets are too close! We have to retry");
+			spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), 0);
+		}
+				
 
         Quaternion spawnRotation = Quaternion.identity;
         GameObject newPlanet = Instantiate (planetPrototype, spawnPosition, spawnRotation) as GameObject;
 
+		SetPlanetNumber(newPlanet,planetNumber);
         SetPlanetSizeRandomly(newPlanet);
+		allPlanets.Add(newPlanet);
     }
 
     void SetPlanetSizeRandomly(GameObject newPlanet)
@@ -42,4 +50,25 @@ public class GameController : MonoBehaviour
         GrowthController growthController = newPlanet.GetComponent<GrowthController>();
         growthController.ShipCounter = Mathf.Round(Random.Range(GrowthController.MIN_SHIPS, GrowthController.MAX_SHIPS));
     }
+
+	void SetPlanetNumber (GameObject newPlanet,int planetNumber)
+	{
+		PlanetController planetController = newPlanet.GetComponent<PlanetController>();
+		planetController.planetNumber = planetNumber;
+	}
+
+	bool IsSpawnPositionTooCloseToOtherPlanets (Vector3 spawnPosition)
+	{
+		foreach(GameObject planet in allPlanets)
+		{
+			float distance = Vector3.Distance(spawnPosition,planet.transform.localPosition);
+
+			if(distance < GrowthController.MAX_SIZE)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
