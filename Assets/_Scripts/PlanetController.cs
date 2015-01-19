@@ -5,6 +5,11 @@ public class PlanetController : MonoBehaviour
 {
 	public int planetNumber;
 
+	void Start()
+	{
+		DisableHalo();
+	}
+
 	void OnTriggerEnter(Collider other) 
 	{
 		if(!other.tag.Equals("Background"))
@@ -12,6 +17,20 @@ public class PlanetController : MonoBehaviour
 			Debug.Log(string.Format("Collision with other planet! {0} , {1}",this, other));
 		}
 	}
+
+	
+	public void DisableHalo()
+	{
+		Light halo = this.GetComponentInChildren<Light>();
+		halo.enabled = false;
+	}
+	
+	public void EnableHalo()
+	{
+		Light halo = this.GetComponentInChildren<Light>();
+		halo.enabled = true;		
+	}
+
 //
 //	void OnMouseDown()
 //	{

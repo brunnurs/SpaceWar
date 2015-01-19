@@ -12,6 +12,8 @@ public class GrowthController : MonoBehaviour
     public const float MIN_SHIPS = 10f;
     public const float MAX_SHIPS = 100f;
 
+	private const float HALO_SIZE = 0.4f;
+
     public float timeBetweenGrowth;
     public float ShipCounter;
 
@@ -20,7 +22,8 @@ public class GrowthController : MonoBehaviour
     void Start()
     {
 		planetController = this.GetComponentInParent<PlanetController>();
-        UpdateLabelAndSize();   
+        UpdateLabelAndSize();
+
         StartCoroutine(GrowPlanet());
     }
 
@@ -47,5 +50,8 @@ public class GrowthController : MonoBehaviour
 
         Vector3 currentSize = new Vector3(newDiameter,newDiameter,newDiameter);
         this.transform.localScale = currentSize;
+
+		Light halo = this.GetComponentInChildren<Light>();
+		halo.range = newDiameter + HALO_SIZE;
     }
 }

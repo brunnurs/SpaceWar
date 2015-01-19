@@ -21,25 +21,26 @@ public class FleetLauncher : MonoBehaviour
 		if (Event.current.type == EventType.MouseDown)
 		{          
 			sourcePlanet = GetPlanetUserClickedOn();
+			TryEnableHalo (sourcePlanet);
 		}
 		
 		if (Event.current.type == EventType.MouseUp)
 		{          
 			targetPlanet = GetPlanetUserClickedOn();
+			TryEnableHalo(targetPlanet);
 
 			if(sourcePlanet != null && targetPlanet != null)
 			{
 				LaunchFleet();
+				StartCoroutine(DisableHalosInASecond());
 			}
 			else
 			{
-				Debug.Log("Reset planets");
-				sourcePlanet = null;
-				targetPlanet = null;
+				ResetSelection ();
 			}
 		}
 	}
-	
+
 	
 	
 	GameObject GetPlanetUserClickedOn ()
@@ -55,6 +56,40 @@ public class FleetLauncher : MonoBehaviour
 		GameObject planetUserClicked = gameController.allPlanets.FirstOrDefault(p=> p.collider == rayhit.collider);
 
 		return planetUserClicked;
+	}
+
+	void TryEnableHalo (GameObject planet)
+	{
+		if (planet != null) {
+			planet.GetComponentInChildren<PlanetController> ().EnableHalo ();
+		}
+	}
+	
+	void TryDisableHalo (GameObject planet)
+	{
+		if (planet != null) {
+			planet.GetComponentInChildren<PlanetController> ().DisableHalo ();
+		}
+	}	
+
+	void ResetSelection ()
+	{
+		Debug.Log ("Reset planets");
+
+		TryDisableHalo (sourcePlanet);
+		sourcePlanet = null;
+
+		TryDisableHalo (targetPlanet);
+		targetPlanet = null;
+	}
+
+	IEnumerator DisableHalosInASecond()
+	{
+		yield return new WaitForSeconds(1);
+
+		TryDisableHalo(sourcePlanet);
+		TryDisableHalo(targetPlanet);
+
 	}
 
 	void LaunchFleet ()
