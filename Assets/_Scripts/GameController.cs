@@ -14,7 +14,6 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
         CreatePlanets ();
     }
 
@@ -28,12 +27,12 @@ public class GameController : MonoBehaviour
 
     void SpawnPlanet(int planetNumber)
     {
-        Vector3 spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), 0);
+        Vector3 spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), -3);
 
 		while(IsSpawnPositionTooCloseToOtherPlanets(spawnPosition))
 		{
 			Debug.Log("two planets are too close! We have to retry");
-			spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), 0);
+			spawnPosition = new Vector3 (Random.Range (-spawnRange.x, spawnRange.x), Random.Range (-spawnRange.y, spawnRange.y), -3);
 		}
 				
 

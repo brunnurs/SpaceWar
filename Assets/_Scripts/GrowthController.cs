@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class GrowthController : MonoBehaviour
 {
@@ -39,10 +40,12 @@ public class GrowthController : MonoBehaviour
 
     void UpdateLabelAndSize()
     {
-        TextMesh textLabel = this.GetComponentInChildren<TextMesh>();
+        Text textLabel = this.GetComponentInChildren<Text>();
         textLabel.text = planetController.planetNumber + ":" + ShipCounter;
 
-        Vector3 currentSize = new Vector3(MAX_SIZE / MAX_SHIPS * ShipCounter, MAX_SIZE / MAX_SHIPS * ShipCounter, 0);
+		float newDiameter = MAX_SIZE / MAX_SHIPS * ShipCounter;
+
+        Vector3 currentSize = new Vector3(newDiameter,newDiameter,newDiameter);
         this.transform.localScale = currentSize;
     }
 }
