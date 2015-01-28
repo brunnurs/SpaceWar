@@ -5,12 +5,12 @@ using System.Linq;
 public class FleetLauncher : MonoBehaviour 
 {
 	public GameObject spaceshipPrototype;
-	public float fleetSizePercentage;
 
 	private GameObject sourcePlanet;
 	private GameObject targetPlanet;
 	
 	private GameController gameController;
+
 
 	void Start()
 	{
@@ -30,7 +30,7 @@ public class FleetLauncher : MonoBehaviour
 			targetPlanet = GetPlanetUserClickedOn();
 			TryEnableHalo(targetPlanet);
 
-			if(sourcePlanet != null && targetPlanet != null)
+			if(sourcePlanet != null && targetPlanet != null && ClickedPlanetBelongsToCurrentPlayer())
 			{
 				LaunchFleet();
 				StartCoroutine(DisableHalosInASecond());
@@ -59,6 +59,20 @@ public class FleetLauncher : MonoBehaviour
 		return planetUserClicked;
 	}
 
+	bool ClickedPlanetBelongsToCurrentPlayer ()
+	{
+		if(!sourcePlanet.GetComponent<PlanetController>().CurrentOwner == gameController.currentPlayer)
+		{
+			Debug.Log(string.Format("Source planet does not belong to player {0}",gameController.currentPlayer));
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+
+	}
+
 	void TryEnableHalo (GameObject planet)
 	{
 		if (planet != null) {
@@ -75,8 +89,6 @@ public class FleetLauncher : MonoBehaviour
 
 	void ResetSelection ()
 	{
-		Debug.Log ("Reset planets");
-
 		TryDisableHalo (sourcePlanet);
 		sourcePlanet = null;
 
@@ -98,17 +110,19 @@ public class FleetLauncher : MonoBehaviour
 		PlanetController sourcePlanetController = sourcePlanet.GetComponent<PlanetController>();
 		PlanetController targetPlanetController = targetPlanet.GetComponent<PlanetController>();
 
-		Debug.Log(string.Format("Launch fleet from planet {0} to planet {1}",sourcePlanetController.planetNumber,targetPlanetController.planetNumber));
+		SpaceshipController newShip = CreateSpaceship();
 
-		CreateSpaceship();
+		Debug.Log(string.Format("Launch fleet from planet {0} to planet {1} with Fleetsize {2}",sourcePlanetController.planetNumber,targetPlanetController.planetNumber,newShip.fleetSize));
 	}
 
-	void CreateSpaceship ()
+	SpaceshipController CreateSpaceship ()
 	{
 		Vector3 targetDirection = targetPlanet.transform.position - sourcePlanet.transform.position;
+		//with reducing the vector to length 1, we take care of the fact that the distance between two planets may vary
+		targetDirection.Normalize();
 
-		//TODO: this line is not optimal, because when the distance between source and target is high, 0.3 is a lot more than when the distance is low. Unitvector!
-		Vector3 spawnPosition = sourcePlanet.transform.position + targetDirection * 0.3f;
+		//The startposition of the spaceship needs to be next to the planet, in direction to the target, but with a little distance
+		Vector3 spawnPosition = sourcePlanet.transform.position + targetDirection * 2f;
 
 		//We rotate the ship to towards target planet when starting. With *270 degree, the ships surface looks towards the user.
 		Quaternion rotation = Quaternion.LookRotation(targetDirection);
@@ -117,9 +131,22 @@ public class FleetLauncher : MonoBehaviour
 		GameObject newSpaceship = Instantiate (spaceshipPrototype, spawnPosition, rotation) as GameObject;
 
 		SpaceshipController spaceshipController = newSpaceship.GetComponent<SpaceshipController>();
-		Debug.Log("13");
 		spaceshipController.targetPlanet = targetPlanet;
-		//TODO calculate amount of firepower
-		spaceshipController.firepower = 10;
+		spaceshipController.shipOwner = gameController.currentPlayer;
+
+		CalculateFleetSizeAndShrinkPlanet (spaceshipController);
+
+		return spaceshipController;
+	}
+
+	void CalculateFleetSizeAndShrinkPlanet (SpaceshipController spaceshipController)
+	{
+		GrowthController sourcePlanetGrowController = sourcePlanet.GetComponent<GrowthController> ();
+
+		int shipsWeWillSend = (int)(sourcePlanetGrowController.ShipCounter * gameController.currentPlayer.fleetPercentage);
+
+		sourcePlanetGrowController.ReduceShips (shipsWeWillSend);
+
+		spaceshipController.fleetSize = shipsWeWillSend;
 	}
 }

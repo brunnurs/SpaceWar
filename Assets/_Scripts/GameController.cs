@@ -9,13 +9,21 @@ public class GameController : MonoBehaviour
     public Vector3 spawnRange;
     public GameObject planetPrototype;
 
-	public List<GameObject> allPlanets = new List<GameObject>();
+	public PlayerController currentPlayer;
 
-    // Use this for initialization
+	public List<GameObject> allPlanets = new List<GameObject>();
+	
     void Start()
     {
         CreatePlanets ();
+		SetPlayerOnRandomPlanet();
     }
+
+	void SetPlayerOnRandomPlanet ()
+	{
+		int startPlanetIndex = Random.Range(0,allPlanets.Count);
+		allPlanets[startPlanetIndex].GetComponent<PlanetController>().CurrentOwner = currentPlayer;
+	}
 
 	void CreatePlanets ()
 	{
