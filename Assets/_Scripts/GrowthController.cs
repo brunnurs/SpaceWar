@@ -4,22 +4,24 @@ using UnityEngine.UI;
 
 public class GrowthController : MonoBehaviour
 {
-    /// <summary>
-    /// All planets should have at least 10 ships on it, and max 100. The size grows from 1 to 3 
-    /// </summary>
 	public const float MAX_SIZE = 3f;
 	public const float MIN_SIZE = 2f;
     public const float MIN_SHIPS = 10f;
     public const float MAX_SHIPS = 100f;
 
-	private const float HALO_SIZE = 0.8f;
+	public const float HALO_SIZE = 0.8f;
+	public const float MIN_TIME_BETWEEN_GROWTH = 1;
+	public const float MAX_TIME_BETWEEN_GROWTH = 2.5;
 
-    public float timeBetweenGrowth;
-    public float ShipCounter;
+	public float ShipCounter;
+
+    private float timeBetweenGrowth;
 
     void Start()
     {
-        UpdateLabelAndSizeAndHalo();
+		CalculateTimeBetweenGrowth();
+
+        UpdateLabel();
 
         StartCoroutine(GrowPlanet());
     }
@@ -33,7 +35,7 @@ public class GrowthController : MonoBehaviour
             if (ShipCounter < MAX_SHIPS)
             {
                 ShipCounter++;
-                UpdateLabelAndSizeAndHalo();
+                UpdateLabel();
             }
         }
     }
@@ -53,7 +55,7 @@ public class GrowthController : MonoBehaviour
 		}
 
 
-		UpdateLabelAndSizeAndHalo();
+		UpdateLabel();
 
 		return remainingShips;
 	}
@@ -63,25 +65,33 @@ public class GrowthController : MonoBehaviour
 		ShipCounter += ships;
 		ShipCounter = Mathf.Min(ShipCounter,MAX_SHIPS);
 
-		UpdateLabelAndSizeAndHalo();
+		UpdateLabel();
 	}
 
-    void UpdateLabelAndSizeAndHalo()
+    void UpdateLabel()
     {
         Text textLabel = this.GetComponentInChildren<Text>();
         textLabel.text = ShipCounter.ToString();
 
-		float newDiameter = MAX_SIZE / MAX_SHIPS * ShipCounter;
-
-		if(newDiameter < MIN_SIZE)
-		{
-			newDiameter = MIN_SIZE;
-		}
-
-        Vector3 currentSize = new Vector3(newDiameter,newDiameter,newDiameter);
-        this.transform.localScale = currentSize;
-
-		Light halo = this.GetComponentInChildren<Light>();
-		halo.range = newDiameter + HALO_SIZE;
+//		float newDiameter = MAX_SIZE / MAX_SHIPS * ShipCounter;
+//
+//		if(newDiameter < MIN_SIZE)
+//		{
+//			newDiameter = MIN_SIZE;
+//		}
+//
+//        Vector3 currentSize = new Vector3(newDiameter,newDiameter,newDiameter);
+//        this.transform.localScale = currentSize;
+//
+//		Light halo = this.GetComponentInChildren<Light>();
+//		halo.range = newDiameter + HALO_SIZE;
     }
+
+	void CalculateTimeBetweenGrowth ()
+	{
+		float planetSize = this.transform.localScale.x;
+
+		this.timeBetweenGrowth = MAX_TIME_BETWEEN_GROWTH / MAX_SIZE * planetSize;
+
+	}
 }
