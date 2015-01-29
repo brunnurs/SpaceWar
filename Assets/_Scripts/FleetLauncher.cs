@@ -76,14 +76,14 @@ public class FleetLauncher : MonoBehaviour
 	void TryEnableHalo (GameObject planet)
 	{
 		if (planet != null) {
-			planet.GetComponentInChildren<PlanetController> ().EnableHalo ();
+			planet.GetComponentInChildren<PlanetController> ().EnableDragHalo ();
 		}
 	}
 	
 	void TryDisableHalo (GameObject planet)
 	{
 		if (planet != null) {
-			planet.GetComponentInChildren<PlanetController> ().DisableHalo ();
+			planet.GetComponentInChildren<PlanetController> ().DisableDragHalo ();
 		}
 	}	
 

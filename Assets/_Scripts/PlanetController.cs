@@ -63,24 +63,37 @@ public class PlanetController : MonoBehaviour
 		CurrentOwner = shipOwner;
 	}
 	
-	public void DisableHalo()
+	public void DisableDragHalo()
 	{
-//		Light halo = this.GetComponentInChildren<Light>();
-//		halo.enabled = false;
+		SetHaloDependingOnOwner();
 	}
 	
-	public void EnableHalo()
-	{
-//		Light halo = this.GetComponentInChildren<Light>();
-//		halo.enabled = true;		
-	}
-
-	public void SetHaloColor(Color color)
+	public void EnableDragHalo()
 	{
 		Light halo = this.GetComponentInChildren<Light>();
+
 		//Don't know why it is not just possible to set the color. Solution releated to this thread http://answers.unity3d.com/questions/527639/light-halo-and-color.html
-		halo.color = new Color(color.r,color.g,color.b,1);
-		halo.enabled = true;		
+		halo.color = new Color(Color.white.r,Color.white.g,Color.white.b,1);
+		halo.enabled = true;
+		halo.intensity = 6;
+	}
+
+	public void SetHaloDependingOnOwner()
+	{
+		Light halo = this.GetComponentInChildren<Light>();
+
+		if (currentOwner != null)
+		{
+			Color currentOwnerColor = currentOwner.playerColor;
+			//Don't know why it is not just possible to set the color. Solution releated to this thread http://answers.unity3d.com/questions/527639/light-halo-and-color.html
+			halo.color = new Color(currentOwnerColor.r,currentOwnerColor.g,currentOwnerColor.b,1);
+			halo.enabled = true;
+			halo.intensity = 4;
+		}
+		else
+		{
+			halo.enabled = false;
+		}
 	}
 
 	public PlayerController CurrentOwner
@@ -88,7 +101,7 @@ public class PlanetController : MonoBehaviour
 		set
 		{
 			currentOwner = value;
-			SetHaloColor(currentOwner.playerColor);
+			SetHaloDependingOnOwner();
 		}
 		get
 		{
