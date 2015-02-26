@@ -5,13 +5,12 @@ using UnityEngine.UI;
 public class GrowthController : MonoBehaviour
 {
 	public const float MAX_SIZE = 3f;
-	public const float MIN_SIZE = 2f;
-    public const float MIN_SHIPS = 10f;
-    public const float MAX_SHIPS = 100f;
+	public const float MIN_SIZE = 1.5f;
+    public const int MIN_SHIPS = 10;
+    public const int MAX_SHIPS = 100;
 
 	public const float HALO_SIZE = 0.8f;
-	public const float MIN_TIME_BETWEEN_GROWTH = 1;
-	public const float MAX_TIME_BETWEEN_GROWTH = 2.5;
+	public const float MIN_TIME_BETWEEN_GROWTH = 1.0f;
 
 	public float ShipCounter;
 
@@ -20,6 +19,8 @@ public class GrowthController : MonoBehaviour
     void Start()
     {
 		CalculateTimeBetweenGrowth();
+
+		SetHaloBySize();
 
         UpdateLabel();
 
@@ -72,26 +73,20 @@ public class GrowthController : MonoBehaviour
     {
         Text textLabel = this.GetComponentInChildren<Text>();
         textLabel.text = ShipCounter.ToString();
-
-//		float newDiameter = MAX_SIZE / MAX_SHIPS * ShipCounter;
-//
-//		if(newDiameter < MIN_SIZE)
-//		{
-//			newDiameter = MIN_SIZE;
-//		}
-//
-//        Vector3 currentSize = new Vector3(newDiameter,newDiameter,newDiameter);
-//        this.transform.localScale = currentSize;
-//
-//		Light halo = this.GetComponentInChildren<Light>();
-//		halo.range = newDiameter + HALO_SIZE;
     }
 
 	void CalculateTimeBetweenGrowth ()
 	{
 		float planetSize = this.transform.localScale.x;
 
-		this.timeBetweenGrowth = MAX_TIME_BETWEEN_GROWTH / MAX_SIZE * planetSize;
+		this.timeBetweenGrowth = MIN_TIME_BETWEEN_GROWTH * MAX_SIZE / planetSize;
+		Debug.Log(string.Format("Time between Growth {0}",timeBetweenGrowth));
 
+	}
+
+	void SetHaloBySize ()
+	{
+		Light halo = this.GetComponentInChildren<Light>();
+		halo.range = this.transform.localScale.x + HALO_SIZE;
 	}
 }

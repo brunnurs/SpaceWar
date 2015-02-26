@@ -49,14 +49,22 @@ public class GameController : MonoBehaviour
 
 		SetPlanetNumber(newPlanet,planetNumber);
         SetPlanetSizeRandomly(newPlanet);
+		SetPlanetShipsRandomly(newPlanet);
 		allPlanets.Add(newPlanet);
     }
 
     void SetPlanetSizeRandomly(GameObject newPlanet)
     {
-        GrowthController growthController = newPlanet.GetComponent<GrowthController>();
-        growthController.ShipCounter = Mathf.Round(Random.Range(GrowthController.MIN_SHIPS, GrowthController.MAX_SHIPS));
+        float diameter = Random.Range(GrowthController.MIN_SIZE, GrowthController.MAX_SIZE);
+		newPlanet.transform.localScale = new Vector3(diameter,diameter,diameter);
     }
+
+	void SetPlanetShipsRandomly (GameObject newPlanet)
+	{
+		GrowthController growthController = newPlanet.GetComponent<GrowthController>();
+		growthController.ShipCounter = Random.Range(GrowthController.MIN_SHIPS, GrowthController.MAX_SHIPS);
+//		growthController.ShipCounter = 10;
+	}
 
 	void SetPlanetNumber (GameObject newPlanet,int planetNumber)
 	{
