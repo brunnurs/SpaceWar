@@ -22,7 +22,19 @@ public class GameController : MonoBehaviour
 	void SetPlayerOnRandomPlanet ()
 	{
 		int startPlanetIndex = Random.Range(0,allPlanets.Count);
-		allPlanets[startPlanetIndex].GetComponent<PlanetController>().CurrentOwner = currentPlayer;
+		GameObject choosenPlanet = allPlanets [startPlanetIndex];
+
+		choosenPlanet.GetComponent<PlanetController>().CurrentOwner = currentPlayer;
+
+		IncreaseSizeWhenPlayerPlanetTooShort (choosenPlanet);
+	}
+
+	void IncreaseSizeWhenPlayerPlanetTooShort(GameObject choosenPlanet)
+	{
+		if (choosenPlanet.GetComponent<GrowthController> ().ShipCounter < GrowthController.MAX_SHIPS / 2) 
+		{
+			choosenPlanet.GetComponent<GrowthController> ().ShipCounter = Random.Range(GrowthController.MAX_SHIPS / 2,GrowthController.MAX_SHIPS);
+		}
 	}
 
 	void CreatePlanets ()

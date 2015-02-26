@@ -16,6 +16,13 @@ public class GrowthController : MonoBehaviour
 
     private float timeBetweenGrowth;
 
+	private PlanetController planetController;
+
+	void Awake()
+	{
+		planetController = gameObject.GetComponent<PlanetController> ();
+	}
+
     void Start()
     {
 		CalculateTimeBetweenGrowth();
@@ -33,7 +40,7 @@ public class GrowthController : MonoBehaviour
         {
             yield return new WaitForSeconds(timeBetweenGrowth);
 
-            if (ShipCounter < MAX_SHIPS)
+            if (ShipCounter < MAX_SHIPS && planetController.CurrentOwner != null)
             {
                 ShipCounter++;
                 UpdateLabel();
