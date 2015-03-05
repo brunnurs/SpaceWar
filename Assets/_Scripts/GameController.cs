@@ -36,10 +36,25 @@ public class GameController : MonoBehaviour {
 			}
 			
 			GameObject newPlanet =	Instantiate (planetPrototype, positionVector, Quaternion.identity) as GameObject;
+			SetRandomPlanetSize(newPlanet);
+			SetRandomShipCounter(newPlanet);
+
 			allPlanets.Add(newPlanet);
 		}
 	}
 
+	void SetRandomPlanetSize (GameObject newPlanet)
+	{
+		float newDiameter = Random.Range (GrowthController1.MIN_SIZE, GrowthController1.MAX_SIZE);
+		newPlanet.transform.localScale = new Vector3(newDiameter,newDiameter,newDiameter);
+	}
+
+	void SetRandomShipCounter (GameObject newPlanet)
+	{
+		GrowthController1 growthController = newPlanet.GetComponentInChildren<GrowthController1> ();
+		growthController.SpaceShipCounter = Random.Range (GrowthController1.MIN_SHIPCOUNTER, GrowthController1.MAX_SHIPCOUNTER);
+
+	}
 
 	bool IsTooCloseToOtherPlanets (Vector3 randomPosition)
 	{

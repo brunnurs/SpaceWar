@@ -4,13 +4,20 @@ using UnityEngine.UI;
 
 public class GrowthController1 : MonoBehaviour {
 
-	public const float MAX_SIZE = 3;
+	public const float MAX_SIZE = 3f;
+	public const float MIN_SIZE = 1.5f;
+	public const int MIN_SHIPCOUNTER = 10;
+	public const int MAX_SHIPCOUNTER = 100;
+
+	public const float MIN_TIME_BETWEEN_GROWTH = 1.0f;
 
 	public int SpaceShipCounter;
 
+	private float currentGrowthTime;
+
 	void Start () 
 	{
-		SpaceShipCounter = 10;
+		CalculateGrowthTime ();
 		UpdateCounterDisplay ();
 		StartCoroutine (GrowSpaceships());
 	}
@@ -19,7 +26,7 @@ public class GrowthController1 : MonoBehaviour {
 	{
 		while(true)
 		{
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds(currentGrowthTime);
 			SpaceShipCounter++;
 			UpdateCounterDisplay();
 		}
@@ -31,4 +38,11 @@ public class GrowthController1 : MonoBehaviour {
 		displayCounter.text = SpaceShipCounter + "";
 	}
 
+	void CalculateGrowthTime ()
+	{
+		float currentPlanetSize = this.transform.localScale.x;
+
+		currentGrowthTime = MIN_TIME_BETWEEN_GROWTH * MAX_SIZE / currentPlanetSize;
+
+	}
 }
