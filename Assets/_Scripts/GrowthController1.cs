@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class GrowthController1 : MonoBehaviour {
 
+	public const float MAX_SIZE = 3;
+
 	public int SpaceShipCounter;
 
 	void Start () 
