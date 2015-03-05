@@ -3,21 +3,55 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GameController : MonoBehaviour
+public class GameController : Photon.MonoBehaviour
 {
+	private const string GAME_VERSION = "1.0";
+	private const string DEFAULT_ROOM = "DefaultRoom";
+	private const string PLANET_PREFAB_NAME = "Planet";
+
     public float amountOfPlanets;
     public Vector3 spawnRange;
-    public GameObject planetPrototype;
 
 	public PlayerController currentPlayer;
 
 	public List<GameObject> allPlanets = new List<GameObject>();
-	
-    void Start()
+
+
+
+	public void JoinRoom()
+	{
+		PhotonNetwork.JoinRoom (DEFAULT_ROOM);
+        Debug.Log ("Join Room " + DEFAULT_ROOM);
+	}
+
+	public void CreateRoom()
+	{
+		PhotonNetwork.CreateRoom (DEFAULT_ROOM);
+		Debug.Log ("Create Room " + DEFAULT_ROOM);
+    }
+
+    public void StartGame()
     {
+		Debug.Log ("Start Game");
+		photonView.RPC ("GameStarted", PhotonTargets.AllBufferedViaServer, null);
+
         CreatePlanets ();
 		SetPlayerOnRandomPlanet();
     }
+
+	[RPC]
+	public void GameStarted()
+	{
+		this.GetComponentInChildren<Canvas> ().gameObject.SetActive (false);
+		Debug.Log ("Game started!");
+	}
+
+
+	void Start()
+	{
+		PhotonNetwork.ConnectUsingSettings (GAME_VERSION);
+		Debug.Log ("Connected to PhotonNetwork");
+	}
 
 	void SetPlayerOnRandomPlanet ()
 	{
@@ -57,7 +91,7 @@ public class GameController : MonoBehaviour
 				
 
         Quaternion spawnRotation = Quaternion.identity;
-        GameObject newPlanet = Instantiate (planetPrototype, spawnPosition, spawnRotation) as GameObject;
+        GameObject newPlanet = PhotonNetwork.Instantiate(PLANET_PREFAB_NAME, spawnPosition, spawnRotation,0) as GameObject;
 
 		SetPlanetNumber(newPlanet,planetNumber);
         SetPlanetSizeRandomly(newPlanet);
