@@ -29,6 +29,7 @@ public class GameController : MonoBehaviour {
 
 			while (IsTooCloseToOtherPlanets(positionVector))
 			{
+				Debug.Log("new random position for planet created");
 				xPosition = Random.Range (borders.x * -1, borders.x);
 				yPosition = Random.Range (borders.y * -1, borders.y);
 

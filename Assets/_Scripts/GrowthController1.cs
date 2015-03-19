@@ -9,6 +9,8 @@ public class GrowthController1 : MonoBehaviour {
 	public const int MIN_SHIPCOUNTER = 10;
 	public const int MAX_SHIPCOUNTER = 100;
 
+	public const float HALO_SIZE = 0.8f;
+
 	public const float MIN_TIME_BETWEEN_GROWTH = 1.0f;
 
 	public int SpaceShipCounter;
@@ -19,6 +21,7 @@ public class GrowthController1 : MonoBehaviour {
 	{
 		CalculateGrowthTime ();
 		UpdateCounterDisplay ();
+		SetHaloBySize ();
 		StartCoroutine (GrowSpaceships());
 	}
 
@@ -44,5 +47,11 @@ public class GrowthController1 : MonoBehaviour {
 
 		currentGrowthTime = MIN_TIME_BETWEEN_GROWTH * MAX_SIZE / currentPlanetSize;
 
+	}
+
+	void SetHaloBySize ()
+	{
+		Light halo = this.GetComponentInChildren<Light>();
+		halo.range = this.transform.localScale.x + HALO_SIZE;
 	}
 }

@@ -5,9 +5,9 @@ public class FleetLaunchController : MonoBehaviour {
 
 	GameController gameController;
 
-	GameObject sourcePlanet = null;
-	GameObject targetPlanet = null;
-
+	GameObject sourcePlanet;
+	GameObject targetPlanet;
+	
 	void Awake()
 	{
 		gameController = this.GetComponentInParent<GameController>();
@@ -16,40 +16,28 @@ public class FleetLaunchController : MonoBehaviour {
 
 	void OnGUI()
 	{
-
-		if (Event.current.type == EventType.MouseDown) 
+		if (Event.current.type == EventType.mouseDown) 
 		{
-			sourcePlanet = GetPlanetClickedOn();
+			sourcePlanet = GetPlanetClickedOn ();
 
-			if(sourcePlanet != null)
-			{
-				Debug.Log("Hitted source Planet!");
-				sourcePlanet.GetComponentInChildren<PlanetController>().EnableHalo();
-			}
+			TryEnableHalo (sourcePlanet);
 		}
 
 		if (Event.current.type == EventType.mouseUp) 
 		{
-			targetPlanet = GetPlanetClickedOn();
+			targetPlanet = GetPlanetClickedOn ();
 			
-			if(targetPlanet != null)
-			{
-				Debug.Log("Hitted target Planet!");
-				targetPlanet.GetComponentInChildren<PlanetController>().EnableHalo();
-			}
+			TryEnableHalo(targetPlanet);
 
-			if (sourcePlanet != null && targetPlanet != null) 
-			{				
+			if (sourcePlanet != null && targetPlanet != null && sourcePlanet != targetPlanet)
+			{
+					Debug.Log("Start Fleet!");
 			}
 			else
 			{
-				sourcePlanet.GetComponentInChildren<PlanetController>().DisableHalo();
-				targetPlanet.GetComponentInChildren<PlanetController>().DisableHalo();
-
-				sourcePlanet = null;
-				targetPlanet = null;
+				ResetPlanets();
 			}
-		}
+        }
 
 	}
 
@@ -74,4 +62,29 @@ public class FleetLaunchController : MonoBehaviour {
 		return null;
 
 	}
+
+	void TryEnableHalo (GameObject planet)
+	{
+		if (planet != null) {
+			Debug.Log ("Planet clicked!");
+			var planetController = planet.GetComponentInChildren<PlanetController> ();
+			planetController.EnableHalo ();
+		}
+	}
+
+	void TryDisableHalo (GameObject planet)
+	{
+		if (planet != null) {
+			var planetController = planet.GetComponentInChildren<PlanetController> ();
+			planetController.DisableHalo();
+        }
+    }
+    
+	void ResetPlanets ()
+	{
+		TryDisableHalo (sourcePlanet);
+		TryDisableHalo (targetPlanet);
+		sourcePlanet = null;
+		targetPlanet = null;
+    }
 }
