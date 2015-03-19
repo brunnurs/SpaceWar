@@ -3,13 +3,6 @@ using System.Collections;
 
 public class PlanetController : MonoBehaviour {
 
-	private Light halo;
-
-	public void Awake()
-	{
-		halo = this.GetComponentInChildren<Light> ();
-	}
-
 	public void Start()
 	{
 		DisableHalo();
@@ -17,11 +10,13 @@ public class PlanetController : MonoBehaviour {
 
 	public void EnableHalo()
 	{
+		var halo = this.GetComponentInChildren<Light> ();
 		halo.enabled = true;
 	}
 
 	public void DisableHalo()
 	{
+		var halo = this.GetComponentInChildren<Light> ();
 		halo.enabled = false;
 	}
 }

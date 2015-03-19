@@ -5,6 +5,9 @@ public class FleetLaunchController : MonoBehaviour {
 
 	GameController gameController;
 
+	GameObject sourcePlanet = null;
+	GameObject targetPlanet = null;
+
 	void Awake()
 	{
 		gameController = this.GetComponentInParent<GameController>();
@@ -13,20 +16,41 @@ public class FleetLaunchController : MonoBehaviour {
 
 	void OnGUI()
 	{
+
 		if (Event.current.type == EventType.MouseDown) 
 		{
-			GameObject planet = GetPlanetClickedOn();
+			sourcePlanet = GetPlanetClickedOn();
 
-			if(planet == null)
+			if(sourcePlanet != null)
 			{
-				Debug.Log("No planet hitted!");
+				Debug.Log("Hitted source Planet!");
+				sourcePlanet.GetComponentInChildren<PlanetController>().EnableHalo();
+			}
+		}
+
+		if (Event.current.type == EventType.mouseUp) 
+		{
+			targetPlanet = GetPlanetClickedOn();
+			
+			if(targetPlanet != null)
+			{
+				Debug.Log("Hitted target Planet!");
+				targetPlanet.GetComponentInChildren<PlanetController>().EnableHalo();
+			}
+
+			if (sourcePlanet != null && targetPlanet != null) 
+			{				
 			}
 			else
 			{
+				sourcePlanet.GetComponentInChildren<PlanetController>().DisableHalo();
+				targetPlanet.GetComponentInChildren<PlanetController>().DisableHalo();
 
-				Debug.Log("Planet hitted!");
+				sourcePlanet = null;
+				targetPlanet = null;
 			}
 		}
+
 	}
 
 	GameObject GetPlanetClickedOn ()

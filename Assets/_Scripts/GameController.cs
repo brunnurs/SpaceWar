@@ -8,7 +8,7 @@ public class GameController : MonoBehaviour {
 	public int planetCount;
 	public Vector3 borders;
 
-	private List<GameObject> allPlanets;
+	public List<GameObject> allPlanets;
 
 	void Start () 
 	{
